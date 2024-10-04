@@ -22,26 +22,26 @@ public class AliOssUtil {
     /**
      * 文件上传
      *
-     * @param bytes
-     * @param objectName
+     * @param bytes 文件的字节数组，即将上传的文件内容
+     * @param objectName 存储在 OSS 中的文件名。通过 bucketName 和 objectName 可以唯一标识 OSS 中的文件。
      * @return
      */
     public String upload(byte[] bytes, String objectName) {
 
-        // 创建OSSClient实例。
+        // 创建OSSClient实例。这个实例用于与阿里云 OSS 服务进行交互。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 创建PutObject请求。
+            // 创建PutObject请求。使用 putObject 方法上传文件
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(bytes));
-        } catch (OSSException oe) {
+        } catch (OSSException oe) { // 通常由于请求不合法（如认证失败、存储空间不存在等）导致。
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
             System.out.println("Error Message:" + oe.getErrorMessage());
             System.out.println("Error Code:" + oe.getErrorCode());
             System.out.println("Request ID:" + oe.getRequestId());
             System.out.println("Host ID:" + oe.getHostId());
-        } catch (ClientException ce) {
+        } catch (ClientException ce) { // 客户端问题导致的异常，比如无法连接到网络、网络超时
             System.out.println("Caught an ClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
